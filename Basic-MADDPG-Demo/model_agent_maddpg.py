@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Sun Jul 28 05:24:38 2019
+
+@author: wangjingyi
+"""
+
 import tensorflow as tf
 import tensorflow.contrib as tc
 
@@ -11,7 +18,7 @@ class MADDPG():
         other_action_input = tf.placeholder(shape=[None, nb_other_aciton], dtype=tf.float32)
         reward = tf.placeholder(shape=[None, 1], dtype=tf.float32)
 
-
+        #初始化actor神经网络，智能体决策策略
         def actor_network(name):
             with tf.variable_scope(name) as scope:
                 x = state_input
@@ -30,7 +37,7 @@ class MADDPG():
                 x = tf.nn.tanh(x)
             return x
 
-
+        #初始化critic神经网络，利用全局策略，进行总体判定
         def critic_network(name, action_input, reuse=False):
             with tf.variable_scope(name) as scope:
                 if reuse:
@@ -72,18 +79,21 @@ class MADDPG():
         self.target_Q = tf.placeholder(shape=[None, 1], dtype=tf.float32)
         self.critic_loss = tf.reduce_mean(tf.square(self.target_Q - self.critic_output))
         self.critic_train = self.critic_optimizer.minimize(self.critic_loss)
-
+        
+    #训练actor网络
     def train_actor(self, state, other_action, sess):
         sess.run(self.actor_train, {self.state_input: state, self.other_action_input: other_action})
-
+        
+    #训练critic网络
     def train_critic(self, state, action, other_action, target, sess):
         sess.run(self.critic_train,
                  {self.state_input: state, self.action_input: action, self.other_action_input: other_action,
                   self.target_Q: target})
-
+    #使用决策
     def action(self, state, sess):
         return sess.run(self.action_output, {self.state_input: state})
-
+    
+    #累计Q函数积累
     def Q(self, state, action, other_action, sess):
         return sess.run(self.critic_output,
                         {self.state_input: state, self.action_input: action, self.other_action_input: other_action})
