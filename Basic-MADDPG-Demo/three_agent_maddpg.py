@@ -107,6 +107,7 @@ if __name__ == '__main__':
                                                     {reward_1000[agent_index]: np.mean(reward_100_list[agent_index])}),
                                            i // 1000)
         print('step:',i)
+        env.render()
         agent1_action, agent2_action, agent3_action = get_agents_action(o_n, sess, noise_rate=0.2)
 
         #三个agent的行动

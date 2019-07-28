@@ -78,7 +78,7 @@ if __name__ == '__main__':
               agent2_actor_target_init, agent2_critic_target_init,
               agent3_actor_target_init, agent3_critic_target_init])
 
-    saver.restore(sess, './three_ma_weight/6000.cptk')
+    saver.restore(sess, './three_ma_weight/checkpoint')
     summary_writer = tf.summary.FileWriter('./three_ma_summary', graph=tf.get_default_graph())
 
     e = 1
